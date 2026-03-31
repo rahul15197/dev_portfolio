@@ -183,7 +183,7 @@
   }
 
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply bg-background text-foreground overflow-x-clip;
     font-family: var(--font-body);
     background: var(--hero-gradient);
     background-attachment: fixed;
