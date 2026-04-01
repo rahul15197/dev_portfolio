@@ -41,12 +41,9 @@ const MobileHero = () => {
 
       {/* Middle Section: Typography */}
       <div className="relative z-10 flex flex-col items-start w-full gap-2">
-        <h1 
-          className="font-black leading-none tracking-tight text-foreground" 
-          style={{ fontSize: 'clamp(2.5rem, 12vw, 4.5rem)' }}
-        >
-          <span className="hero-gradient-text block mb-1">Rahul</span>
-          <span className="block">Maheshwari</span>
+        <h1 className="font-black leading-none tracking-tight text-foreground">
+          <span className="hero-gradient-text block mb-1" style={{ fontSize: 'clamp(2.5rem, 12vw, 4.5rem)' }}>Rahul</span>
+          <span className="block" style={{ fontSize: 'clamp(1.8rem, 9.5vw, 3.5rem)' }}>Maheshwari</span>
         </h1>
 
         <div className="mt-4 flex items-center gap-2">
