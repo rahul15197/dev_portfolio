@@ -6,6 +6,7 @@ import heroImage from '@/assets/hero-bg.jpg';
 import FloatingProfileCard from './FloatingProfileCard';
 import Terminal3D from './Terminal3D';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import profileImage from '@/assets/profile.png';
 
 const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -72,7 +73,7 @@ const HeroSection = () => {
               className="flex flex-col items-start whitespace-nowrap"
             >
               <span className="text-[10px] md:text-sm text-muted-foreground uppercase tracking-widest mb-1 md:mb-2 font-medium">Software Engineer</span>
-              <h1 className="text-[13vw] sm:text-[16vw] md:text-[12vw] xl:text-[11vw] font-black leading-none tracking-tighter text-foreground hero-gradient-text pt-2 sm:pt-0">RAHUL</h1>
+              <h1 className="text-[11vw] sm:text-[14vw] md:text-[12vw] xl:text-[11vw] font-black leading-none tracking-tighter text-foreground hero-gradient-text pt-2 sm:pt-0">RAHUL</h1>
             </motion.div>
           </div>
 
@@ -82,7 +83,7 @@ const HeroSection = () => {
               style={{ x: rightNameX, y: rightNameY, opacity: namesOpacity }}
               className="flex flex-col items-end whitespace-nowrap"
             >
-              <h1 className="text-[8.5vw] sm:text-[10vw] md:text-[8vw] xl:text-[6.5vw] font-black leading-none tracking-tighter text-foreground">MAHESHWARI</h1>
+              <h1 className="text-[7vw] sm:text-[9vw] md:text-[8vw] xl:text-[6.5vw] font-black leading-none tracking-tighter text-foreground">MAHESHWARI</h1>
               <span className="text-[10px] md:text-sm text-muted-foreground uppercase tracking-widest mt-1 md:mt-2 font-medium">Full Stack & QA</span>
             </motion.div>
           </div>
@@ -97,9 +98,9 @@ const HeroSection = () => {
           <FloatingProfileCard scrollProgress={1} />
         </motion.div>
 
-        {/* Mobile card morphing */}
+        {/* Mobile card morphing - fully hidden in mobile, handled inline below */}
         <motion.div 
-          className="absolute z-30 pointer-events-auto md:hidden"
+          className="absolute z-30 pointer-events-auto md:hidden hidden"
           style={{ y: mobileCardY, scale: mobileCardScale }}
         >
           <div className="transform scale-[0.85]">
@@ -116,8 +117,14 @@ const HeroSection = () => {
             {/* Left Content that fades in */}
             <div className="flex items-center justify-center md:justify-start w-full pointer-events-auto h-full pt-[35vh] sm:pt-[45vh] md:pt-0">
               <div className="text-center md:text-left max-w-3xl w-full">
+                <div className="flex flex-col items-center justify-center md:hidden mb-4">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border border-border/50 shadow-lg mb-2">
+                    <img src={profileImage} alt="Profile portrait" className="w-full h-full object-cover" />
+                  </div>
+                  <h3 className="hero-gradient-text font-semibold text-lg">Rahul Maheshwari</h3>
+                </div>
                 <p className="section-kicker mb-3 md:mb-5 justify-center md:justify-start">Capabilities</p>
-                <h2 className="display-title text-5xl sm:text-6xl md:text-7xl mb-4 md:mb-6 leading-[1.05] md:leading-[0.92]">
+                <h2 className="display-title text-4xl sm:text-5xl md:text-7xl mb-4 md:mb-6 leading-[1.05] md:leading-[0.92]">
                   <span className="hero-gradient-text tracking-tight block">Software</span>
                   <span className="block mt-1">
                     <TypewriterText words={['Developer', 'QA']} />
