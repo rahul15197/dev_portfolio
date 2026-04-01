@@ -15,14 +15,15 @@ const ProjectBackground: React.FC<ProjectBackgroundProps> = ({ projectId }) => {
           style={{
             backgroundImage: `linear-gradient(rgba(100, 150, 255, 0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(100, 150, 255, 0.4) 1px, transparent 1px)`,
             backgroundSize: '40px 40px',
-            transform: 'perspective(500px) rotateX(60deg) scale(2) translateY(-100px)'
+            transform: 'perspective(500px) rotateX(60deg) scale(2) translateY(-100px)',
+            willChange: 'transform'
           }}
         />
         {/* Scanning Line */}
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-blue-500 shadow-[0_0_20px_5px_rgba(59,130,246,0.6)] animate-[scan_4s_ease-in-out_infinite]" />
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-blue-500 shadow-[0_0_20px_5px_rgba(59,130,246,0.6)] animate-[scan_4s_ease-in-out_infinite] will-change-[top]" />
         
         {/* Facial/Focus Brackets */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] max-w-[500px] h-[60vw] max-h-[500px] opacity-10 border-[2px] border-blue-400 [mask-image:linear-gradient(to_bottom,black_20%,transparent_20%,transparent_80%,black_80%),linear-gradient(to_right,black_20%,transparent_20%,transparent_80%,black_80%)] animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] max-w-[500px] h-[60vw] max-h-[500px] opacity-10 border-[2px] border-blue-400 [mask-image:linear-gradient(to_bottom,black_20%,transparent_20%,transparent_80%,black_80%),linear-gradient(to_right,black_20%,transparent_20%,transparent_80%,black_80%)] animate-pulse will-change-[opacity]" />
         
         <style dangerouslySetInnerHTML={{__html: `
           @keyframes scan {
@@ -49,7 +50,8 @@ const ProjectBackground: React.FC<ProjectBackgroundProps> = ({ projectId }) => {
               left: `${Math.random() * 100}%`,
               top: `${(Math.random() * -100)}%`,
               animation: `flow ${10 + Math.random() * 15}s linear infinite`,
-              animationDelay: `-${Math.random() * 20}s`
+              animationDelay: `-${Math.random() * 20}s`,
+              willChange: 'transform'
             }}
           />
         ))}
@@ -62,7 +64,8 @@ const ProjectBackground: React.FC<ProjectBackgroundProps> = ({ projectId }) => {
               left: `${10 + Math.random() * 80}%`,
               top: `${10 + Math.random() * 80}%`,
               animation: `pulseNode ${3 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `-${Math.random() * 5}s`
+              animationDelay: `-${Math.random() * 5}s`,
+              willChange: 'transform'
             }}
           />
         ))}
@@ -100,7 +103,8 @@ const ProjectBackground: React.FC<ProjectBackgroundProps> = ({ projectId }) => {
                 left: `${-10 + Math.random() * 120}%`,
                 top: `${-10 + Math.random() * 120}%`,
                 animation: `floatCell ${15 + Math.random() * 20}s ease-in-out infinite alternate`,
-                animationDelay: `-${Math.random() * 30}s`
+                animationDelay: `-${Math.random() * 30}s`,
+                willChange: 'transform'
               }}
             />
           );

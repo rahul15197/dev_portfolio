@@ -1,59 +1,38 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const ScrollRevealText: React.FC<{ text: string }> = ({ text }) => {
   const containerRef = useRef<HTMLParagraphElement>(null);
-  const [progress, setProgress] = useState(0);
-  const rafRef = useRef<number | null>(null);
-  const lastProgress = useRef(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (rafRef.current) return;
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = null;
-        if (!containerRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        
-        const start = windowHeight * 0.85;
-        const end = windowHeight * 0.35;
-        
-        let currentProgress = (start - rect.top) / (start - end);
-        currentProgress = Math.max(0, Math.min(1, currentProgress));
-        
-        // Skip no-op updates (within ~1% tolerance)
-        if (Math.abs(currentProgress - lastProgress.current) < 0.01) return;
-        lastProgress.current = currentProgress;
-        setProgress(currentProgress);
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); 
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 0.85", "start 0.35"]
+  });
 
   const words = text.split(' ');
 
   return (
     <p ref={containerRef} className="text-lg md:text-xl lg:text-[1.35rem] font-normal leading-relaxed text-muted-foreground/90 mb-5">
       {words.map((word, i) => {
-        const wordProgress = (i / words.length);
-        const isActive = progress > wordProgress;
+        const start = i / words.length;
+        const end = (i + 1) / words.length;
         
+        // This transform will change the opacity/color of words as the user scrolls
+        const opacity = useTransform(scrollYProgress, [start, end], [0.2, 1]);
+        const color = useTransform(
+          scrollYProgress,
+          [start, end],
+          ["rgb(113 113 122 / 0.2)", "rgb(255 255 255 / 1)"]
+        );
+
         return (
-          <span
+          <motion.span
             key={i}
-            className={`transition-colors duration-300 ${
-              isActive ? 'text-foreground' : 'text-muted-foreground/20'
-            }`}
+            style={{ opacity, color }}
+            className="transition-none"
           >
             {word}{' '}
-          </span>
+          </motion.span>
         );
       })}
     </p>

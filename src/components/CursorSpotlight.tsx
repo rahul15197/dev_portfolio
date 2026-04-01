@@ -37,12 +37,10 @@ const CursorSpotlight: React.FC = () => {
     <div
       ref={ref}
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-40"
+      className="pointer-events-none fixed top-0 left-0 z-40 h-[800px] w-[800px] rounded-full opacity-60 will-change-transform"
       style={{
-        background:
-          'radial-gradient(400px circle at var(--spot-x, 50%) var(--spot-y, 50%), hsl(var(--primary)/0.18), transparent 60%)',
-        transition: 'background-position 120ms ease-out',
-        mixBlendMode: 'screen',
+        background: 'radial-gradient(circle, hsl(var(--primary)/0.15) 0%, transparent 70%)',
+        transform: `translate(var(--spot-x, -1000px), var(--spot-y, -1000px)) translate(-50%, -50%)`,
       }}
     />
   );

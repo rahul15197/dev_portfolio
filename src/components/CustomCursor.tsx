@@ -73,6 +73,7 @@ const CustomCursor = () => {
           y: cursorY,
           translateX: "-50%",
           translateY: "-50%",
+          willChange: "transform",
         }}
         variants={{
           default: { width: 44, height: 44, opacity: isVisible ? 1 : 0 },
@@ -90,6 +91,7 @@ const CustomCursor = () => {
           y: cursorY,
           translateX: "-50%",
           translateY: "-50%",
+          willChange: "transform",
         }}
         variants={{
           default: { width: 8, height: 8, opacity: isVisible ? 1 : 0 },
