@@ -17,6 +17,12 @@ const queryClient = new QueryClient();
 
 const App = () => {
   useEffect(() => {
+    // Lenis smooth scroll is desktop-only — on touch/mobile devices
+    // it intercepts iOS Safari native scroll events and prevents
+    // IntersectionObserver from firing (sections stay opacity:0 forever).
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (isTouchDevice) return; // Let mobile browsers use native smooth scroll
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

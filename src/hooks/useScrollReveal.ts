@@ -20,7 +20,11 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
     if (typeof window === 'undefined') return;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+    // On touch/mobile devices, show immediately — Lenis is disabled there
+    // and IntersectionObserver can be unreliable with iOS Safari scroll semantics.
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window) || isTouchDevice) {
       setIsVisible(true);
       return;
     }
