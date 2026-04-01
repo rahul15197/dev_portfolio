@@ -124,9 +124,9 @@ const Navigation = () => {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
-          className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-auto min-w-max"
+          className="md:hidden fixed bottom-4 sm:bottom-6 left-0 right-0 z-[100] w-full flex justify-center px-4 pointer-events-none"
         >
-          <div className="rounded-full p-1.5 border border-border/20 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex items-center gap-1 bg-zinc-900 dark:bg-black/90 backdrop-blur-3xl text-zinc-300">
+          <div className="rounded-full p-1 sm:p-1.5 border border-border/20 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex items-center gap-0.5 sm:gap-1 bg-zinc-900 dark:bg-black/90 backdrop-blur-3xl text-zinc-300 pointer-events-auto w-max max-w-full overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             {navItems.filter(item => item.href !== '#contact').map((item) => {
               const Icon = item.icon;
               const isActive = active === item.href;

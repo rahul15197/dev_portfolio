@@ -47,11 +47,11 @@ const ProjectsSection = () => {
 
           {/* 2. Project Slides */}
           {featuredProjects.map((project, index) => (
-            <div key={project.id} className="flex-shrink-0 w-[85vw] md:w-[60vw] lg:w-[40vw] h-[65vh] md:h-[75vh]">
+            <div key={project.id} className="flex-shrink-0 w-[85vw] md:w-[60vw] lg:w-[40vw] h-[75vh]">
               <article className="group h-full w-full glass-card soft-panel overflow-hidden text-card-foreground flex flex-col relative transform transition-transform duration-700 hover:scale-[1.01]">
                 
                 {/* Image Section */}
-                <div className="relative overflow-hidden w-full h-[45%] md:h-[50%] shrink-0">
+                <div className="relative overflow-hidden w-full h-[40%] md:h-[50%] shrink-0">
                   <div 
                     className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                     style={{ backgroundImage: `url(${project.image})` }}
@@ -64,14 +64,14 @@ const ProjectsSection = () => {
                 </div>
 
                 {/* Content Section */}
-                <div className="p-5 md:p-8 flex h-full flex-col bg-background/5 backdrop-blur-sm grow">
+                <div className="p-4 sm:p-5 md:p-8 flex h-full flex-col bg-background/5 backdrop-blur-sm grow">
                   <div className="mb-4 flex items-center justify-between gap-4">
                     <span className="section-kicker text-xs">Case Study</span>
                     <span className="text-xs font-semibold text-foreground/80">{projectMetrics[index]}</span>
                   </div>
                   
-                  <h3 className="text-2xl md:text-3xl font-semibold mb-3 hero-gradient-text leading-tight">{project.title}</h3>
-                  <p className="text-muted-foreground mb-6 leading-relaxed text-sm md:text-base line-clamp-3">{project.description}</p>
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-2 sm:mb-3 hero-gradient-text leading-tight">{project.title}</h3>
+                  <p className="text-muted-foreground mb-4 sm:mb-6 leading-relaxed text-xs sm:text-sm md:text-base line-clamp-3">{project.description}</p>
                   
                   <div className="flex flex-wrap gap-2 mb-6">
                     {project.technologies.map((tech, techIndex) => (
@@ -79,11 +79,11 @@ const ProjectsSection = () => {
                     ))}
                   </div>
                   
-                  <div className="mt-auto flex gap-3 w-full">
-                    <Button variant="outline" size="sm" className="flex-1 btn-border-glow text-sm py-5 soft-panel rounded-xl" onClick={() => window.open(`/project/${project.id}`, '_blank')}>
+                  <div className="mt-auto flex gap-2 sm:gap-3 w-full">
+                    <Button variant="outline" size="sm" className="flex-1 btn-border-glow text-xs sm:text-sm py-4 sm:py-5 soft-panel rounded-xl" onClick={() => window.open(`/project/${project.id}`, '_blank')}>
                       Read More <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
-                    <Button variant="outline" size="sm" className="flex-1 btn-border-glow text-sm py-5 soft-panel rounded-xl" onClick={() => window.open(project.githubUrl, '_blank')}>
+                    <Button variant="outline" size="sm" className="flex-1 btn-border-glow text-xs sm:text-sm py-4 sm:py-5 soft-panel rounded-xl" onClick={() => window.open(project.githubUrl, '_blank')}>
                       <Github className="mr-2 h-4 w-4" /> Code
                     </Button>
                   </div>
