@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { ExternalLink, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const projectMetrics = ['95% accuracy', '91.2% accuracy', '98.6% accuracy'];
 
@@ -60,12 +61,8 @@ const MobileProjectsSection = () => (
     {/* Project Cards */}
     <div className="flex flex-col gap-6">
       {projects.filter(p => p.featured).map((project, index) => (
-        <motion.article
+        <article
           key={project.id}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ delay: index * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="glass-card soft-panel overflow-hidden flex flex-col w-full rounded-2xl"
         >
           {/* Image */}
@@ -123,16 +120,12 @@ const MobileProjectsSection = () => (
               </Button>
             </div>
           </div>
-        </motion.article>
+        </article>
       ))}
     </div>
 
     {/* View All */}
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    <div
       className="mt-10 text-center"
     >
       <h3 className="text-xl font-bold mb-4 text-foreground/80">More builds?</h3>
@@ -143,7 +136,7 @@ const MobileProjectsSection = () => (
       >
         View GitHub
       </Button>
-    </motion.div>
+    </div>
   </section>
 );
 
@@ -240,11 +233,13 @@ const DesktopProjectsSection = () => {
 // ──────────────────────────────────────────────
 // Combined export
 // ──────────────────────────────────────────────
-const ProjectsSection = () => (
-  <div id="projects">
-    <MobileProjectsSection />
-    <DesktopProjectsSection />
-  </div>
-);
+const ProjectsSection = () => {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  return (
+    <div id="projects">
+      {isDesktop ? <DesktopProjectsSection /> : <MobileProjectsSection />}
+    </div>
+  );
+};
 
 export default ProjectsSection;

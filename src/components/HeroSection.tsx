@@ -7,8 +7,114 @@ import FloatingProfileCard from './FloatingProfileCard';
 import Terminal3D from './Terminal3D';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import profileImage from '@/assets/profile.png';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
-const HeroSection = () => {
+const socialLinks = [
+  { icon: Github, href: 'https://github.com/rahul15197', label: 'GitHub' },
+  { icon: Linkedin, href: 'https://www.linkedin.com/in/rm15197/', label: 'LinkedIn' },
+  { icon: Mail, href: 'mailto:rahul.maheshmaheshwari@gmail.com', label: 'Email' },
+];
+
+const scrollToSection = (href: string) => {
+  const element = document.querySelector(href);
+  if (element) element.scrollIntoView({ behavior: 'smooth' });
+};
+
+// =================== MOBILE HERO (Stitch Premium Static) ===================
+const MobileHero = () => {
+  return (
+    <section
+      className="relative min-h-[100dvh] w-full bg-[#111317] flex flex-col overflow-hidden px-6 pt-24 pb-16 justify-between gap-8"
+      style={{ zIndex: 10 }}
+    >
+      {/* Premium Glass Effect Background */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-[#7C3AED] rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#a6e6ff] rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none" />
+
+      {/* Top Section: Profile Card */}
+      <div className="relative z-10 flex flex-col items-center pt-4">
+        <div className="w-[180px] sm:w-[200px] mb-6">
+          {/* We pass scrollProgress={1} to lock it to static fully revealed state */}
+          <FloatingProfileCard scrollProgress={1} />
+        </div>
+      </div>
+
+      {/* Middle Section: Typography */}
+      <div className="relative z-10 flex flex-col items-start w-full gap-2">
+        <h1 
+          className="font-black leading-none text-[#e2e2e8] uppercase font-['Space_Grotesk'] tracking-tighter" 
+          style={{ fontSize: 'clamp(2.5rem, 12vw, 4.5rem)' }}
+        >
+          Rahul
+          <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d2bbff] to-[#7c3aed]">
+            Maheshwari
+          </span>
+        </h1>
+
+        <div className="mt-4 flex items-center gap-2">
+          <span className="w-8 h-[1px] bg-[#d2bbff]/50"></span>
+          <p className="font-['Space_Grotesk'] font-medium text-sm tracking-widest text-[#a6e6ff] uppercase">
+            Creative Technologist
+          </p>
+        </div>
+
+        <div className="text-base font-['Inter'] text-[#ccc3d8] leading-relaxed max-w-[90%] mt-2">
+          Building polished, performant products with modern technologies, thoughtful QA, and a bias toward clean execution.
+        </div>
+      </div>
+
+      {/* Bottom Section: CTAs & Socials */}
+      <div className="relative z-10 flex flex-col w-full gap-4 mt-8">
+        <Button
+          size="lg"
+          className="w-full rounded-2xl bg-gradient-to-br from-[#d2bbff] to-[#7c3aed] text-[#25005a] hover:opacity-90 font-['Inter'] text-base font-semibold py-7 shadow-[0_0_24px_rgba(124,58,237,0.3)] transition-transform active:scale-95"
+          onClick={() => scrollToSection('#projects')}
+        >
+          View My Work
+        </Button>
+        <Button
+          asChild
+          variant="outline"
+          size="lg"
+          className="w-full rounded-2xl bg-[#333539]/60 backdrop-blur-xl border border-[#4a4455]/40 text-[#e2e2e8] hover:bg-[#333539]/80 font-['Inter'] text-base py-7 transition-transform active:scale-95"
+        >
+          <a href="https://drive.google.com/file/d/1I-CFzLrIurHKbecMfexe3hevU08kQKVB/view" target="_blank" rel="noopener noreferrer">
+            <Download className="mr-2 h-5 w-5 opacity-70" /> Resume / CV
+          </a>
+        </Button>
+
+        <div className="flex justify-between items-center w-full mt-4">
+          <div className="flex gap-3">
+            {socialLinks.map((social, index) => (
+              <a
+                key={index}
+                href={social.href}
+                target={social.href.startsWith('#') ? '_self' : '_blank'}
+                rel="noopener noreferrer"
+                aria-label={`Visit ${social.label}`}
+                className="flex items-center justify-center w-12 h-12 rounded-[14px] bg-[#1a1c20] border border-[#4a4455]/30 text-[#e2e2e8] hover:bg-[#333539] transition-colors"
+                onClick={(e) => {
+                  if (social.href.startsWith('#')) {
+                    e.preventDefault();
+                    scrollToSection(social.href);
+                  }
+                }}
+              >
+                <social.icon className="h-5 w-5" />
+              </a>
+            ))}
+          </div>
+          <span className="text-xs font-['Inter'] text-[#958da1] tracking-wide uppercase">Available</span>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+
+// =================== DESKTOP HERO (Scroll-Jacked Parallax) ===================
+const DesktopHero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -16,44 +122,35 @@ const HeroSection = () => {
     offset: ['start start', 'end start']
   });
 
-  // Name translations (split apart & subtle vertical parallax) — desktop only
+  // Name translations (split apart & subtle vertical parallax)
   const leftNameX = useTransform(scrollYProgress, [0, 0.33], ["0vw", "-60vw"]);
   const rightNameX = useTransform(scrollYProgress, [0, 0.33], ["0vw", "60vw"]);
   const leftNameY = useTransform(scrollYProgress, [0, 0.33], ["0vh", "-15vh"]);
   const rightNameY = useTransform(scrollYProgress, [0, 0.33], ["0vh", "15vh"]);
   const namesOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
 
-  // Card translation (center -> right) — desktop only
+  // Card translation (center -> right)
   const cardX = useTransform(scrollYProgress, [0, 0.35], ["0vw", "25vw"]);
   const cardScale = useTransform(scrollYProgress, [0, 0.35], [1.2, 1]);
 
-  // Main text content fade-in — desktop only
+  // Main text content fade-in
   const contentOpacity = useTransform(scrollYProgress, [0.25, 0.45], [0, 1]);
   const contentY = useTransform(scrollYProgress, [0.25, 0.45], [50, 0]);
 
-  const socialLinks = [
-    { icon: Github, href: 'https://github.com/rahul15197', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://www.linkedin.com/in/rm15197/', label: 'LinkedIn' },
-    { icon: Mail, href: 'mailto:rahul.maheshmaheshwari@gmail.com', label: 'Email' },
-  ];
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) element.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <div id="home">
-      {/* =================== MOBILE HERO (static, fully visible) =================== */}
-      <section
-        className="md:hidden relative min-h-[100dvh] w-full bg-background flex flex-col overflow-x-hidden"
-        style={{ zIndex: 10 }}
-      >
-        {/* Background */}
+    <section
+      ref={containerRef}
+      className="relative h-[300vh] w-full bg-background"
+      style={{ zIndex: 10 }}
+    >
+      {/* Sticky Frame */}
+      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex items-center justify-center">
+
+        {/* Background Layers */}
         <div className="hero-hex-bg" aria-hidden />
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none will-change-transform">
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-subtle-pan"
             style={{
               backgroundImage: `url(${heroImage})`,
               filter: 'var(--hero-image-filter)',
@@ -63,216 +160,129 @@ const HeroSection = () => {
         </div>
         <div className="absolute inset-0 pointer-events-none bg-background/50 backdrop-blur-[2px]" />
 
-        {/* Mobile content — vertical stack, always visible */}
-        <div className="relative z-10 flex flex-col items-center justify-center w-full px-5 pt-20 pb-10 gap-5 min-h-[inherit]">
-
-          {/* Profile Card — centered, prominent */}
-          <div className="w-full max-w-[220px] mx-auto">
-            <FloatingProfileCard scrollProgress={1} />
-          </div>
-
-          {/* Name + title */}
-          <div className="text-center w-full overflow-hidden">
-            <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium block mb-1">
-              Software Engineer
-            </span>
-            <h1 className="font-black leading-none tracking-tight text-foreground hero-gradient-text" style={{ fontSize: 'min(15vw, 58px)' }}>
-              RAHUL
-            </h1>
-            <h2 className="font-black leading-none text-foreground" style={{ fontSize: 'min(7.5vw, 29px)', letterSpacing: '-0.02em' }}>
-              MAHESHWARI
-            </h2>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium block mt-1">
-              Full Stack &amp; QA
-            </span>
-          </div>
-
-          {/* Typewriter + description */}
-          <div className="text-center w-full">
-            <p className="section-kicker mb-2 justify-center">Capabilities</p>
-            <div className="text-2xl font-bold mb-3">
-              <TypewriterText words={['Developer', 'QA']} />
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-              Building polished, performant products with modern technologies, thoughtful QA, and a bias toward clean execution.
-            </p>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
-            <Button
-              size="lg"
-              className="btn-glow transition-spring text-base px-8 py-6 w-full rounded-full"
-              onClick={() => scrollToSection('#projects')}
+        {/* --- SCROLL-JACKED LAYER 1: Initial Massive Names --- */}
+        <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
+          {/* Top Text: Rahul */}
+          <div className="absolute top-[20%] xl:top-[22%] w-full flex justify-center">
+            <motion.div
+              style={{ x: leftNameX, y: leftNameY, opacity: namesOpacity }}
+              className="flex flex-col items-start whitespace-nowrap"
             >
-              View My Work
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="resume-button btn-border-glow transition-smooth text-base px-8 py-6 w-full rounded-full soft-panel"
-            >
-              <a href="https://drive.google.com/file/d/1I-CFzLrIurHKbecMfexe3hevU08kQKVB/view" target="_blank" rel="noopener noreferrer">
-                <Download className="mr-2 h-5 w-5" /> Resume/CV
-              </a>
-            </Button>
+              <span className="text-sm text-muted-foreground uppercase tracking-widest mb-2 font-medium">Software Engineer</span>
+              <h1 className="text-[12vw] xl:text-[11vw] font-black leading-none tracking-tighter text-foreground hero-gradient-text pt-0">RAHUL</h1>
+            </motion.div>
           </div>
 
-          {/* Social Links */}
-          <div className="flex justify-center gap-4">
-            {socialLinks.map((social, index) => (
-              <Button
-                key={index}
-                variant="ghost"
-                size="icon"
-                className="social-icon-btn h-12 w-12 rounded-full bg-card/40 hover:bg-card/80 backdrop-blur-md"
-                aria-label={`Visit ${social.label}`}
-                onClick={() => social.href.startsWith('#') ? scrollToSection(social.href) : window.open(social.href, '_blank', 'noopener,noreferrer')}
-              >
-                <social.icon className="h-5 w-5" />
-              </Button>
-            ))}
+          {/* Bottom Text: Maheshwari */}
+          <div className="absolute top-[65%] xl:top-[68%] w-full flex justify-center">
+            <motion.div
+              style={{ x: rightNameX, y: rightNameY, opacity: namesOpacity }}
+              className="flex flex-col items-end whitespace-nowrap"
+            >
+              <h1 className="text-[8vw] xl:text-[6.5vw] font-black leading-none tracking-tighter text-foreground">MAHESHWARI</h1>
+              <span className="text-sm text-muted-foreground uppercase tracking-widest mt-2 font-medium">Full Stack &amp; QA</span>
+            </motion.div>
           </div>
         </div>
-      </section>
 
-      {/* =================== DESKTOP HERO (scroll-jacked parallax) =================== */}
-      <section
-        ref={containerRef}
-        className="relative h-[300vh] w-full bg-background hidden md:block"
-        style={{ zIndex: 10 }}
-      >
-        {/* Sticky Frame */}
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex items-center justify-center">
+        {/* --- SCROLL-JACKED LAYER 2: The Morphing Card --- */}
+        <motion.div
+          className="absolute z-30 pointer-events-auto"
+          style={{ x: cardX, scale: cardScale }}
+        >
+          <FloatingProfileCard scrollProgress={1} />
+        </motion.div>
 
-          {/* Background Layers */}
-          <div className="hero-hex-bg" aria-hidden />
-          <div className="absolute inset-0 pointer-events-none will-change-transform">
-            <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-subtle-pan"
-              style={{
-                backgroundImage: `url(${heroImage})`,
-                filter: 'var(--hero-image-filter)',
-                opacity: 'var(--hero-image-opacity)',
-              }}
-            />
-          </div>
-          <div className="absolute inset-0 pointer-events-none bg-background/50 backdrop-blur-[2px]" />
+        {/* --- SCROLL-JACKED LAYER 3: Regular Content Fade In --- */}
+        <motion.div
+          style={{ opacity: contentOpacity, y: contentY }}
+          className="container relative z-40 px-6 w-full flex items-center justify-center h-full pointer-events-none"
+        >
+          <div className="grid grid-cols-2 items-center gap-12 lg:gap-16 w-full h-full">
+            {/* Left Content that fades in */}
+            <div className="flex items-center justify-start w-full pointer-events-auto h-full pt-0 pb-0 z-[50]">
+              <div className="text-left max-w-3xl w-full">
+                <p className="section-kicker mb-5 justify-start">Capabilities</p>
+                <h2 className="display-title text-5xl md:text-7xl mb-6 leading-[1.05] md:leading-[0.92]">
+                  <span className="hero-gradient-text tracking-tight block">Software</span>
+                  <span className="block mt-1">
+                    <TypewriterText words={['Developer', 'QA']} />
+                  </span>
+                </h2>
 
-          {/* --- SCROLL-JACKED LAYER 1: Initial Massive Names --- */}
-          <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
-            {/* Top Text: Rahul */}
-            <div className="absolute top-[20%] xl:top-[22%] w-full flex justify-center">
-              <motion.div
-                style={{ x: leftNameX, y: leftNameY, opacity: namesOpacity }}
-                className="flex flex-col items-start whitespace-nowrap"
-              >
-                <span className="text-sm text-muted-foreground uppercase tracking-widest mb-2 font-medium">Software Engineer</span>
-                <h1 className="text-[12vw] xl:text-[11vw] font-black leading-none tracking-tighter text-foreground hero-gradient-text pt-0">RAHUL</h1>
-              </motion.div>
-            </div>
+                <p className="text-lg md:text-2xl text-muted-foreground mb-8 max-w-xl leading-relaxed text-balance-tight">
+                  Building polished, performant products with modern technologies, thoughtful QA, and a bias toward clean execution.
+                </p>
 
-            {/* Bottom Text: Maheshwari */}
-            <div className="absolute top-[65%] xl:top-[68%] w-full flex justify-center">
-              <motion.div
-                style={{ x: rightNameX, y: rightNameY, opacity: namesOpacity }}
-                className="flex flex-col items-end whitespace-nowrap"
-              >
-                <h1 className="text-[8vw] xl:text-[6.5vw] font-black leading-none tracking-tighter text-foreground">MAHESHWARI</h1>
-                <span className="text-sm text-muted-foreground uppercase tracking-widest mt-2 font-medium">Full Stack &amp; QA</span>
-              </motion.div>
-            </div>
-          </div>
+                <div className="flex flex-row gap-4 justify-start mb-10">
+                  <Button size="lg" className="btn-glow transition-spring text-lg px-8 py-6 rounded-xl" onClick={() => scrollToSection('#projects')}>
+                    View My Work
+                  </Button>
+                  <Button asChild variant="outline" size="lg" className="resume-button btn-border-glow transition-smooth text-lg px-8 py-6 rounded-xl soft-panel">
+                    <a href="https://drive.google.com/file/d/1I-CFzLrIurHKbecMfexe3hevU08kQKVB/view" target="_blank" rel="noopener noreferrer">
+                      <Download className="mr-2 h-5 w-5" /> Resume/CV
+                    </a>
+                  </Button>
+                </div>
 
-          {/* --- SCROLL-JACKED LAYER 2: The Morphing Card --- */}
-          <motion.div
-            className="absolute z-30 pointer-events-auto"
-            style={{ x: cardX, scale: cardScale }}
-          >
-            <FloatingProfileCard scrollProgress={1} />
-          </motion.div>
-
-          {/* --- SCROLL-JACKED LAYER 3: Regular Content Fade In --- */}
-          <motion.div
-            style={{ opacity: contentOpacity, y: contentY }}
-            className="container relative z-40 px-6 w-full flex items-center justify-center h-full pointer-events-none"
-          >
-            <div className="grid grid-cols-2 items-center gap-12 lg:gap-16 w-full h-full">
-              {/* Left Content that fades in */}
-              <div className="flex items-center justify-start w-full pointer-events-auto h-full pt-0 pb-0 z-[50]">
-                <div className="text-left max-w-3xl w-full">
-                  <p className="section-kicker mb-5 justify-start">Capabilities</p>
-                  <h2 className="display-title text-5xl md:text-7xl mb-6 leading-[1.05] md:leading-[0.92]">
-                    <span className="hero-gradient-text tracking-tight block">Software</span>
-                    <span className="block mt-1">
-                      <TypewriterText words={['Developer', 'QA']} />
-                    </span>
-                  </h2>
-
-                  <p className="text-lg md:text-2xl text-muted-foreground mb-8 max-w-xl leading-relaxed text-balance-tight">
-                    Building polished, performant products with modern technologies, thoughtful QA, and a bias toward clean execution.
-                  </p>
-
-                  <div className="flex flex-row gap-4 justify-start mb-10">
-                    <Button size="lg" className="btn-glow transition-spring text-lg px-8 py-6 rounded-xl" onClick={() => scrollToSection('#projects')}>
-                      View My Work
+                {/* Social Links */}
+                <div className="flex justify-start gap-4">
+                  {socialLinks.map((social, index) => (
+                    <Button
+                      key={index}
+                      variant="ghost"
+                      size="icon"
+                      className="social-icon-btn h-10 w-10 rounded-full bg-card/40 hover:bg-card/80 backdrop-blur-md"
+                      aria-label={`Visit ${social.label}`}
+                      onClick={() => social.href.startsWith('#') ? scrollToSection(social.href) : window.open(social.href, '_blank', 'noopener,noreferrer')}
+                    >
+                      <social.icon className="h-5 w-5" />
                     </Button>
-                    <Button asChild variant="outline" size="lg" className="resume-button btn-border-glow transition-smooth text-lg px-8 py-6 rounded-xl soft-panel">
-                      <a href="https://drive.google.com/file/d/1I-CFzLrIurHKbecMfexe3hevU08kQKVB/view" target="_blank" rel="noopener noreferrer">
-                        <Download className="mr-2 h-5 w-5" /> Resume/CV
-                      </a>
-                    </Button>
-                  </div>
-
-                  {/* Social Links */}
-                  <div className="flex justify-start gap-4">
-                    {socialLinks.map((social, index) => (
-                      <Button
-                        key={index}
-                        variant="ghost"
-                        size="icon"
-                        className="social-icon-btn h-10 w-10 rounded-full bg-card/40 hover:bg-card/80 backdrop-blur-md"
-                        aria-label={`Visit ${social.label}`}
-                        onClick={() => social.href.startsWith('#') ? scrollToSection(social.href) : window.open(social.href, '_blank', 'noopener,noreferrer')}
-                      >
-                        <social.icon className="h-5 w-5" />
-                      </Button>
-                    ))}
-                  </div>
+                  ))}
                 </div>
               </div>
-              {/* Right side left empty in grid because card moved here absolutely */}
-              <div className="hidden md:block w-full h-full pointer-events-none" />
             </div>
-          </motion.div>
+            {/* Right side left empty in grid because card moved here absolutely */}
+            <div className="w-full h-full pointer-events-none" />
+          </div>
+        </motion.div>
 
-          {/* Floating Icons */}
-          <motion.div style={{ opacity: namesOpacity }} className="absolute z-10 pointer-events-none inset-0">
-            <div className="absolute top-28 right-1/4 opacity-60 [perspective:800px] animate-subtle-pan" aria-hidden>
-              <div className="glass-card p-3 rounded-xl shadow animate-float [transform-style:preserve-3d] rotate-y-6 rotate-x-6">
-                <Code className="h-5 w-5" />
-              </div>
+        {/* Floating Icons */}
+        <motion.div style={{ opacity: namesOpacity }} className="absolute z-10 pointer-events-none inset-0">
+          <div className="absolute top-28 right-1/4 opacity-60 [perspective:800px] animate-subtle-pan" aria-hidden>
+            <div className="glass-card p-3 rounded-xl shadow animate-float [transform-style:preserve-3d] rotate-y-6 rotate-x-6">
+              <Code className="h-5 w-5" />
             </div>
-            <div className="absolute bottom-32 left-1/4 opacity-60 [perspective:800px] animate-subtle-pan" style={{ animationDelay: '1s' }} aria-hidden>
-              <div className="glass-card p-3 rounded-xl shadow animate-float [transform-style:preserve-3d] -rotate-y-6 rotate-x-6">
-                <Cpu className="h-5 w-5" />
-              </div>
+          </div>
+          <div className="absolute bottom-32 left-1/4 opacity-60 [perspective:800px] animate-subtle-pan" style={{ animationDelay: '1s' }} aria-hidden>
+            <div className="glass-card p-3 rounded-xl shadow animate-float [transform-style:preserve-3d] -rotate-y-6 rotate-x-6">
+              <Cpu className="h-5 w-5" />
             </div>
-          </motion.div>
+          </div>
+        </motion.div>
 
-          {/* 3D Terminal at bottom center */}
-          <motion.div
-            style={{ opacity: contentOpacity, y: contentY }}
-            className="absolute bottom-8 left-0 right-0 hidden lg:flex justify-center pointer-events-none"
-          >
-            <div className="scale-[0.85] opacity-90 origin-bottom">
-              <Terminal3D className="" />
-            </div>
-          </motion.div>
+        {/* 3D Terminal at bottom center */}
+        <motion.div
+          style={{ opacity: contentOpacity, y: contentY }}
+          className="absolute bottom-8 left-0 right-0 flex justify-center pointer-events-none"
+        >
+          <div className="scale-[0.85] opacity-90 origin-bottom">
+            <Terminal3D className="" />
+          </div>
+        </motion.div>
 
-        </div>
-      </section>
+      </div>
+    </section>
+  );
+};
+
+// =================== COMPONENT EXPORT ===================
+const HeroSection = () => {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  
+  return (
+    <div id="home">
+      {isDesktop ? <DesktopHero /> : <MobileHero />}
     </div>
   );
 };
