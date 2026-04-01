@@ -152,7 +152,7 @@ const DesktopHero = () => {
             }}
           />
         </div>
-        <div className="absolute inset-0 pointer-events-none bg-background/50 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 pointer-events-none bg-background/80" />
 
         {/* --- SCROLL-JACKED LAYER 1: Initial Massive Names --- */}
         <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
