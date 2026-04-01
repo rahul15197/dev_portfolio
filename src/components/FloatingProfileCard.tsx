@@ -88,7 +88,7 @@ const FloatingProfileCard: React.FC<FloatingProfileCardProps> = ({ scrollProgres
     });
   };
 
-  return <div ref={wrapperRef} className="relative w-[50vw] sm:w-[280px] md:w-[320px] lg:w-[340px] max-w-[360px]" style={{
+  return <div ref={wrapperRef} className="relative w-full sm:w-[280px] md:w-[320px] lg:w-[340px] max-w-[360px]" style={{
     perspective: '1200px'
   }} aria-label="3D profile card">
       <article ref={cardRef} className="rounded-2xl border border-border bg-card text-card-foreground shadow-xl overflow-hidden will-change-transform hover:shadow-2xl transition-transform duration-500 ease-out transform-gpu hover:scale-105" style={{

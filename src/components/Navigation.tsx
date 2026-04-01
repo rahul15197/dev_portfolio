@@ -1,13 +1,42 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Home, User, Briefcase, Mail } from 'lucide-react';
+import { Home, User, Briefcase, Mail, Menu, X, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from 'next-themes';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const isScrolledRef = useRef(false);
   const [active, setActive] = useState<string>('#home');
-  
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { theme, setTheme, systemTheme } = useTheme();
+  const isDark = (theme === 'system' ? systemTheme : theme) !== 'light';
+
+  const toggleTheme = (e: React.MouseEvent) => {
+    const isDarkNext = !isDark;
+    const themeNext = isDarkNext ? 'dark' : 'light';
+    if (!document.startViewTransition) {
+      setTheme(themeNext);
+      return;
+    }
+    const x = e.clientX;
+    const y = e.clientY;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+    const transition = document.startViewTransition(() => {
+      setTheme(themeNext);
+    });
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
+        { duration: 900, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' }
+      );
+    });
+  };
+
   const navItems = useMemo(() => [
     { href: '#home', label: 'Home', icon: Home },
     { href: '#about', label: 'About', icon: User },
@@ -39,9 +68,7 @@ const Navigation = () => {
         const id = `#${visible.target.id}`;
         setActive(id);
       }
-    }, {
-      threshold: [0.55]
-    });
+    }, { threshold: [0.3] });
     sections.forEach(s => io.observe(s));
     return () => io.disconnect();
   }, [navItems]);
@@ -62,15 +89,16 @@ const Navigation = () => {
     const element = document.querySelector(href);
     if (element) element.scrollIntoView({ behavior: 'smooth' });
     setActive(href);
+    setMobileMenuOpen(false);
   };
 
   return (
     <>
       {/* Top Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-[100] transition-smooth ${isScrolled ? 'nav-glass shadow-[0_12px_40px_hsl(215_24%_18%_/_0.06)]' : 'bg-transparent'}`}>
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 md:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between gap-4">
-            
+
             {/* Logo */}
             <button className="flex items-center gap-3 text-left" onClick={() => scrollToSection('#home')}>
               <div className="text-2xl font-bold hero-gradient-text"><span aria-label="Rahul logo">{'<rahul>'}</span></div>
@@ -83,22 +111,18 @@ const Navigation = () => {
             {/* Desktop Centered nav */}
             <div ref={barRef} className="hidden md:flex relative items-center justify-center mx-auto transition-transform will-change-transform">
               {highlight && (
-                <div 
-                  className="absolute h-10 rounded-full border border-primary/20 bg-primary/10 transition-all duration-500 ease-out" 
-                  style={{
-                    left: highlight.left,
-                    top: highlight.top,
-                    width: highlight.width
-                  }} 
-                  aria-hidden 
+                <div
+                  className="absolute h-10 rounded-full border border-primary/20 bg-primary/10 transition-all duration-500 ease-out"
+                  style={{ left: highlight.left, top: highlight.top, width: highlight.width }}
+                  aria-hidden
                 />
               )}
               <div className="soft-panel flex items-center gap-2 px-3 py-2 rounded-full border border-border/70 bg-card/60 backdrop-blur-xl shadow-[0_10px_30px_hsl(215_24%_18%_/_0.08)]">
                 {navItems.map(item => (
-                  <button 
-                    key={item.href} 
-                    ref={el => btnRefs.current[item.href] = el} 
-                    onClick={() => scrollToSection(item.href)} 
+                  <button
+                    key={item.href}
+                    ref={el => btnRefs.current[item.href] = el}
+                    onClick={() => scrollToSection(item.href)}
                     className={`relative text-sm px-2 py-1 transition-smooth ${active === item.href ? 'text-primary' : 'text-foreground'}`}
                   >
                     <span className="relative z-10 px-2">{item.label}</span>
@@ -107,59 +131,96 @@ const Navigation = () => {
               </div>
             </div>
 
-            {/* Right CTA */}
-            <div>
-              <Button variant="outline" className="rounded-full px-5 soft-panel btn-border-glow text-xs md:text-sm" onClick={() => scrollToSection('#contact')}>
+            {/* Right CTA + Mobile Hamburger */}
+            <div className="flex items-center gap-2">
+              {/* Desktop CTA */}
+              <Button variant="outline" className="hidden md:flex rounded-full px-5 soft-panel btn-border-glow text-sm" onClick={() => scrollToSection('#contact')}>
                 Get in Touch
               </Button>
+
+              {/* Mobile: Hamburger */}
+              <button
+                className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-card/60 backdrop-blur-md border border-border/50 text-foreground"
+                onClick={() => setMobileMenuOpen(prev => !prev)}
+                aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {mobileMenuOpen ? (
+                    <motion.span key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                      <X className="w-5 h-5" />
+                    </motion.span>
+                  ) : (
+                    <motion.span key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                      <Menu className="w-5 h-5" />
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </button>
             </div>
 
           </div>
         </div>
       </nav>
 
-      {/* Mobile Bottom Dock Navbar (Nikola Radeski style) */}
+      {/* Mobile Dropdown Menu */}
       <AnimatePresence>
-        <motion.div 
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20 }}
-          className="md:hidden fixed bottom-4 sm:bottom-6 left-0 right-0 z-[100] w-full flex justify-center px-4 pointer-events-none"
-        >
-          <div className="rounded-full p-1 sm:p-1.5 border border-border/20 shadow-[0_20px_40px_rgba(0,0,0,0.3)] flex items-center gap-0.5 sm:gap-1 bg-zinc-900 dark:bg-black/90 backdrop-blur-3xl text-zinc-300 pointer-events-auto w-max max-w-full overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            {navItems.filter(item => item.href !== '#contact').map((item) => {
-              const Icon = item.icon;
-              const isActive = active === item.href;
-              return (
-                <button
-                  key={item.href}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`relative px-3.5 py-2.5 rounded-full flex items-center gap-1.5 transition-colors text-[11px] font-medium tracking-wide ${isActive ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
-                >
-                  {isActive && (
-                    <motion.div 
-                      layoutId="mobile-active-pill"
-                      className="absolute inset-0 bg-white/10 rounded-full z-0"
-                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                    />
-                  )}
-                  {item.href === '#home' ? (
-                    <Icon className="w-4 h-4 relative z-10" />
-                  ) : (
-                    <span className="relative z-10">{item.label}</span>
-                  )}
-                </button>
-              );
-            })}
-             <button
-                onClick={() => scrollToSection('#contact')}
-                className="relative px-4 py-2 ml-1 rounded-full text-[11px] font-bold tracking-wide bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-lg"
+        {mobileMenuOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="md:hidden fixed top-[60px] left-4 right-4 z-[99] rounded-2xl border border-border/50 bg-card/95 backdrop-blur-xl shadow-2xl overflow-hidden"
+          >
+            <div className="p-4 flex flex-col gap-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = active === item.href;
+                return (
+                  <button
+                    key={item.href}
+                    onClick={() => scrollToSection(item.href)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all ${
+                      isActive
+                        ? 'bg-primary/15 text-primary'
+                        : 'text-foreground/80 hover:bg-muted/50 hover:text-foreground'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {item.label}
+                    {isActive && (
+                      <motion.div layoutId="mobile-menu-active-dot" className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />
+                    )}
+                  </button>
+                );
+              })}
+
+              {/* Divider */}
+              <div className="my-2 h-px bg-border/50" />
+
+              {/* Theme Toggle in Menu */}
+              <button
+                onClick={toggleTheme}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-foreground/80 hover:bg-muted/50 hover:text-foreground transition-all"
               >
-                Contact
-             </button>
-          </div>
-        </motion.div>
+                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                {isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              </button>
+
+              {/* Contact CTA */}
+              <Button
+                className="mt-2 w-full btn-glow rounded-xl py-5"
+                onClick={() => scrollToSection('#contact')}
+              >
+                Get in Touch
+              </Button>
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
+
+      {/* Desktop-only theme toggle float — hidden on mobile */}
     </>
   );
 };

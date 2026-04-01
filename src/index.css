@@ -210,7 +210,14 @@
   }
 
   section[id] {
-    scroll-margin-top: 6.5rem;
+    scroll-margin-top: 5rem;
+  }
+
+  /* Safe-area padding for notch phones */
+  @supports (padding: max(0px)) {
+    .safe-bottom {
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
   }
 
   img {

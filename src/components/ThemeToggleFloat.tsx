@@ -53,7 +53,7 @@ const ThemeToggleFloat: React.FC<Props> = ({ className = '' }) => {
       initial={{ x: 50, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
-      className={`fixed bottom-28 right-4 md:top-1/2 md:-translate-y-1/2 md:bottom-auto md:right-6 z-50 shadow-2xl ${className}`}
+      className={`hidden md:flex fixed md:top-1/2 md:-translate-y-1/2 md:bottom-auto md:right-6 z-50 shadow-2xl ${className}`}
     >
       <button
         onClick={toggleTheme}
