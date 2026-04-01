@@ -24,12 +24,12 @@ const scrollToSection = (href: string) => {
 const MobileHero = () => {
   return (
     <section
-      className="relative min-h-[100dvh] w-full bg-[#111317] flex flex-col overflow-hidden px-6 pt-24 pb-16 justify-between gap-8"
+      className="relative min-h-[100dvh] w-full bg-background flex flex-col overflow-hidden px-6 pt-24 pb-16 justify-between gap-8"
       style={{ zIndex: 10 }}
     >
       {/* Premium Glass Effect Background */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-[#7C3AED] rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#a6e6ff] rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/40 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/30 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none" />
 
       {/* Top Section: Profile Card */}
       <div className="relative z-10 flex flex-col items-center pt-4">
@@ -42,24 +42,21 @@ const MobileHero = () => {
       {/* Middle Section: Typography */}
       <div className="relative z-10 flex flex-col items-start w-full gap-2">
         <h1 
-          className="font-black leading-none text-[#e2e2e8] uppercase font-['Space_Grotesk'] tracking-tighter" 
+          className="font-black leading-none tracking-tight text-foreground" 
           style={{ fontSize: 'clamp(2.5rem, 12vw, 4.5rem)' }}
         >
-          Rahul
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d2bbff] to-[#7c3aed]">
-            Maheshwari
-          </span>
+          <span className="hero-gradient-text block mb-1">Rahul</span>
+          <span className="block">Maheshwari</span>
         </h1>
 
         <div className="mt-4 flex items-center gap-2">
-          <span className="w-8 h-[1px] bg-[#d2bbff]/50"></span>
-          <p className="font-['Space_Grotesk'] font-medium text-sm tracking-widest text-[#a6e6ff] uppercase">
-            Creative Technologist
+          <span className="w-8 h-[1px] bg-primary/50"></span>
+          <p className="font-medium text-sm tracking-widest text-primary uppercase">
+            <TypewriterText words={['Developer', 'QA']} />
           </p>
         </div>
 
-        <div className="text-base font-['Inter'] text-[#ccc3d8] leading-relaxed max-w-[90%] mt-2">
+        <div className="text-base text-muted-foreground leading-relaxed max-w-[90%] mt-2">
           Building polished, performant products with modern technologies, thoughtful QA, and a bias toward clean execution.
         </div>
       </div>
@@ -68,7 +65,7 @@ const MobileHero = () => {
       <div className="relative z-10 flex flex-col w-full gap-4 mt-8">
         <Button
           size="lg"
-          className="w-full rounded-2xl bg-gradient-to-br from-[#d2bbff] to-[#7c3aed] text-[#25005a] hover:opacity-90 font-['Inter'] text-base font-semibold py-7 shadow-[0_0_24px_rgba(124,58,237,0.3)] transition-transform active:scale-95"
+          className="w-full rounded-2xl btn-glow transition-spring text-base px-8 py-6"
           onClick={() => scrollToSection('#projects')}
         >
           View My Work
@@ -77,35 +74,35 @@ const MobileHero = () => {
           asChild
           variant="outline"
           size="lg"
-          className="w-full rounded-2xl bg-[#333539]/60 backdrop-blur-xl border border-[#4a4455]/40 text-[#e2e2e8] hover:bg-[#333539]/80 font-['Inter'] text-base py-7 transition-transform active:scale-95"
+          className="w-full rounded-2xl btn-border-glow transition-smooth text-base px-8 py-6 soft-panel bg-card/40 backdrop-blur-md hover:bg-card/80"
         >
           <a href="https://drive.google.com/file/d/1I-CFzLrIurHKbecMfexe3hevU08kQKVB/view" target="_blank" rel="noopener noreferrer">
             <Download className="mr-2 h-5 w-5 opacity-70" /> Resume / CV
           </a>
         </Button>
 
-        <div className="flex justify-between items-center w-full mt-4">
-          <div className="flex gap-3">
+        <div className="flex justify-start items-center w-full mt-4">
+          <div className="flex gap-4">
             {socialLinks.map((social, index) => (
-              <a
+              <Button
                 key={index}
-                href={social.href}
-                target={social.href.startsWith('#') ? '_self' : '_blank'}
-                rel="noopener noreferrer"
+                variant="ghost"
+                size="icon"
+                className="h-12 w-12 rounded-[14px] bg-card/50 border border-border/50 text-foreground hover:bg-card/80 transition-colors backdrop-blur-md"
                 aria-label={`Visit ${social.label}`}
-                className="flex items-center justify-center w-12 h-12 rounded-[14px] bg-[#1a1c20] border border-[#4a4455]/30 text-[#e2e2e8] hover:bg-[#333539] transition-colors"
                 onClick={(e) => {
                   if (social.href.startsWith('#')) {
                     e.preventDefault();
                     scrollToSection(social.href);
+                  } else {
+                    window.open(social.href, '_blank', 'noopener,noreferrer');
                   }
                 }}
               >
                 <social.icon className="h-5 w-5" />
-              </a>
+              </Button>
             ))}
           </div>
-          <span className="text-xs font-['Inter'] text-[#958da1] tracking-wide uppercase">Available</span>
         </div>
       </div>
     </section>
