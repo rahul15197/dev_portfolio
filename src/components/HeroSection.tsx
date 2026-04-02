@@ -1,11 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Github, Linkedin, Mail, Download, Code, Cpu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import TypewriterText from './TypewriterText';
 import heroImage from '@/assets/hero-bg.jpg';
 import FloatingProfileCard from './FloatingProfileCard';
 import Terminal3D from './Terminal3D';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useTransform, useMotionValue } from 'framer-motion';
 import profileImage from '@/assets/profile.png';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 
@@ -114,10 +114,45 @@ const MobileHero = () => {
 const DesktopHero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start']
-  });
+  // Use a manual MotionValue driven by Lenis events.
+  // Framer Motion's useScroll reads window.scrollY which Lenis does NOT update
+  // synchronously — it smoothly interpolates via CSS transform. This means
+  // useScroll stays at 0 in Chromium while Lenis is animating, so we must
+  // subscribe directly to the Lenis scroll event for accurate progress.
+  const scrollYProgress = useMotionValue(0);
+
+  useEffect(() => {
+    const update = () => {
+      const lenis = (window as any).lenis;
+      const section = containerRef.current;
+      if (!lenis || !section) return;
+
+      // Compute normalized scroll progress for this section (0 at top, 1 at bottom)
+      const sectionTop = section.getBoundingClientRect().top + lenis.scroll;
+      const sectionHeight = section.scrollHeight - window.innerHeight;
+      const progress = Math.max(0, Math.min(1, (lenis.scroll - sectionTop) / sectionHeight));
+      scrollYProgress.set(progress);
+    };
+
+    // Poll via RAF until Lenis is ready, then subscribe
+    let rafId: number;
+    const waitForLenis = () => {
+      const lenis = (window as any).lenis;
+      if (lenis) {
+        lenis.on('scroll', update);
+        update();
+      } else {
+        rafId = requestAnimationFrame(waitForLenis);
+      }
+    };
+    waitForLenis();
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      const lenis = (window as any).lenis;
+      if (lenis) lenis.off('scroll', update);
+    };
+  }, [scrollYProgress]);
 
   // Name translations (split apart & subtle vertical parallax)
   const leftNameX = useTransform(scrollYProgress, [0, 0.33], ["0vw", "-60vw"]);

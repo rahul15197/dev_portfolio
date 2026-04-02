@@ -1,9 +1,9 @@
 import React from 'react';
 import profileImage from '@/assets/profile.png';
-import { motion, useScroll, useTransform, MotionValue, useMotionValue } from 'framer-motion';
+import { motion, useTransform, MotionValue, useMotionValue } from 'framer-motion';
 
 interface FloatingProfileCardProps {
-  scrollProgress?: number | MotionValue<number>;
+  scrollProgress?: MotionValue<number>;
 }
 
 const FloatingProfileCard: React.FC<FloatingProfileCardProps> = ({ scrollProgress }) => {
@@ -12,34 +12,37 @@ const FloatingProfileCard: React.FC<FloatingProfileCardProps> = ({ scrollProgres
   const rafRef = React.useRef<number | null>(null);
   const [interactive, setInteractive] = React.useState(false);
 
-  const { scrollYProgress: internalScrollY } = useScroll({
-    target: wrapperRef,
-    offset: ["start end", "end start"]
-  });
+  // For mobile (no scrollProgress prop), use a simple window scroll listener
+  const internalProgress = useMotionValue(0);
 
-  // Use a motion value for the active progress to satisfy useTransform
-  const progressToUse = useMotionValue(0);
-  
-  // Sync the progressToUse with either the prop or internal scroll
   React.useEffect(() => {
-    if (scrollProgress === undefined) {
-      return internalScrollY.on("change", (v) => progressToUse.set(v));
-    } else if (typeof scrollProgress === 'number') {
-      progressToUse.set(scrollProgress);
-    } else {
-      return scrollProgress.on("change", (v) => progressToUse.set(v));
-    }
-  }, [scrollProgress, internalScrollY, progressToUse]);
+    if (scrollProgress) return; // desktop: driven externally by Lenis
+    const onScroll = () => {
+      const wrapper = wrapperRef.current;
+      if (!wrapper) return;
+      const rect = wrapper.getBoundingClientRect();
+      const windowH = window.innerHeight;
+      // progress 0 = just entered view, 1 = just left view
+      const progress = Math.max(0, Math.min(1, 1 - rect.bottom / (windowH + rect.height)));
+      internalProgress.set(progress);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [scrollProgress, internalProgress]);
+
+  // Use whichever progress source is available
+  const activeProgress = scrollProgress ?? internalProgress;
 
   // Map the progress to text reveal.
   const textOpacity = useTransform(
-    progressToUse, 
+    activeProgress, 
     [0, 0.35, 0.6, 1], 
     [0, 0, 1, 1]
   );
   
   const textHeight = useTransform(
-    progressToUse, 
+    activeProgress, 
     [0, 0.45, 0.65, 1], 
     [0, 0, 84, 84]
   );
