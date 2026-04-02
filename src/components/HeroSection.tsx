@@ -16,8 +16,12 @@ const socialLinks = [
 ];
 
 const scrollToSection = (href: string) => {
-  const element = document.querySelector(href);
-  if (element) element.scrollIntoView({ behavior: 'smooth' });
+  if ((window as any).lenis) {
+    (window as any).lenis.scrollTo(href, { offset: -80 });
+  } else {
+    const element = document.querySelector(href);
+    if (element) element.scrollIntoView({ behavior: 'smooth' });
+  }
 };
 
 // =================== MOBILE HERO (Stitch Premium Static) ===================

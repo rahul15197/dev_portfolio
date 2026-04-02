@@ -25,14 +25,14 @@ const App = () => {
     if (isTouchDevice) return; // Let mobile browsers use native smooth scroll
 
     const lenis = new Lenis({
-      duration: 1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
+      lerp: 0.1,
+      wheelMultiplier: 1,
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.5,
     });
+
+    // Expose lenis globally for component access
+    (window as any).lenis = lenis;
 
     function raf(time: number) {
       lenis.raf(time);
@@ -42,6 +42,7 @@ const App = () => {
 
     return () => {
       lenis.destroy();
+      (window as any).lenis = undefined;
     };
   }, []);
 
