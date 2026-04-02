@@ -34,8 +34,7 @@ const MobileHero = () => {
       {/* Top Section: Profile Card */}
       <div className="relative z-10 flex flex-col items-center pt-4">
         <div className="w-[180px] sm:w-[200px] mb-6">
-          {/* We pass scrollProgress={1} to lock it to static fully revealed state */}
-          <FloatingProfileCard scrollProgress={1} />
+          <FloatingProfileCard />
         </div>
       </div>
 
@@ -184,7 +183,7 @@ const DesktopHero = () => {
           className="absolute z-30 pointer-events-auto"
           style={{ x: cardX, scale: cardScale }}
         >
-          <FloatingProfileCard scrollProgress={1} />
+          <FloatingProfileCard scrollProgress={scrollYProgress} />
         </motion.div>
 
         {/* --- SCROLL-JACKED LAYER 3: Regular Content Fade In --- */}

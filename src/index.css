@@ -162,24 +162,23 @@
 
   .hero-hex-bg {
     position: absolute;
-    inset: -50%;
+    inset: -20%;
     z-index: -1;
     background-image: 
       radial-gradient(circle at 50% 50%, hsl(var(--primary)/0.04) 0%, transparent 50%),
-      radial-gradient(circle at 30% 70%, hsl(var(--accent)/0.03) 0%, transparent 40%),
-      url("data:image/svg+xml,%3Csvg width='40' height='70' viewBox='0 0 40 70' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0l20 11.5v23L20 46 0 34.5v-23L20 0zm0 23l-20 11.5M20 23v23' stroke='rgba(150, 150, 150, 0.15)' stroke-width='1.5' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
-    background-size: 100vw 100vh, 100vw 100vh, 40px 70px;
-    animation: hex-scroll 40s linear infinite;
+      url("data:image/svg+xml,%3Csvg width='40' height='70' viewBox='0 0 40 70' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0l20 11.5v23L20 46 0 34.5v-23L20 0zm0 23l-20 11.5M20 23v23' stroke='rgba(150, 150, 150, 0.08)' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+    background-size: 100vw 100vh, 40px 70px;
+    animation: hex-scroll 60s linear infinite;
     pointer-events: none;
     perspective: 1000px;
-    transform: perspective(1000px) rotateX(10deg) scale(1.2);
+    transform: perspective(1000px) rotateX(10deg) scale(1.1);
     transform-origin: center top;
-    will-change: background-position;
+    will-change: transform;
     contain: strict;
   }
   @keyframes hex-scroll {
-    0% { background-position: 0 0, 0 0, 0 0; }
-    100% { background-position: 0 0, 0 0, 0 210px; }
+    0% { background-position: 0 0, 0 0; }
+    100% { background-position: 0 0, 0 210px; }
   }
 
   body {
@@ -188,9 +187,8 @@
     background: var(--hero-gradient);
     background-attachment: fixed;
     transition: background 920ms var(--ease-fluid), color 420ms ease-out;
-    text-rendering: optimizeLegibility;
+    text-rendering: optimizeSpeed;
     -webkit-font-smoothing: antialiased;
-    font-feature-settings: 'ss01' 1, 'cv01' 1;
   }
 
   body::after {
@@ -199,10 +197,9 @@
     inset: 0;
     z-index: 9999;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.02;
     contain: strict;
-    will-change: transform;
   }
 
   html {

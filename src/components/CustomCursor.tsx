@@ -67,7 +67,7 @@ const CustomCursor = () => {
     <>
       {/* Outer Ring */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full border border-primary/40 mix-blend-exclusion dark:mix-blend-normal"
+        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full border border-primary/30 bg-primary/5 shadow-[0_0_15px_hsla(var(--primary)/0.1)]"
         style={{
           x: cursorX,
           y: cursorY,
@@ -77,15 +77,15 @@ const CustomCursor = () => {
         }}
         variants={{
           default: { width: 44, height: 44, opacity: isVisible ? 1 : 0 },
-          hover: { width: 64, height: 64, backgroundColor: 'hsl(var(--primary) / 0.1)', borderColor: 'hsl(var(--primary))' },
+          hover: { width: 64, height: 64, backgroundColor: 'hsl(var(--primary) / 0.15)', borderColor: 'hsl(var(--primary) / 0.6)' },
           click: { width: 32, height: 32 }
         }}
         animate={isClicking ? "click" : isHovering ? "hover" : "default"}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
       />
       {/* Inner Dot */}
       <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full bg-primary mix-blend-difference"
+        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full bg-primary"
         style={{
           x: cursorX,
           y: cursorY,
@@ -94,9 +94,9 @@ const CustomCursor = () => {
           willChange: "transform",
         }}
         variants={{
-          default: { width: 8, height: 8, opacity: isVisible ? 1 : 0 },
+          default: { width: 6, height: 6, opacity: isVisible ? 1 : 0 },
           hover: { width: 0, height: 0, opacity: 0 },
-          click: { width: 12, height: 12 }
+          click: { width: 10, height: 10 }
         }}
         animate={isClicking ? "click" : isHovering ? "hover" : "default"}
         transition={{ type: "spring", stiffness: 400, damping: 30 }}

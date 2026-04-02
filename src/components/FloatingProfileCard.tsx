@@ -1,34 +1,54 @@
 import React from 'react';
 import profileImage from '@/assets/profile.png';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, MotionValue, useMotionValue } from 'framer-motion';
 
 interface FloatingProfileCardProps {
-  scrollProgress?: number;
+  scrollProgress?: number | MotionValue<number>;
 }
 
-const FloatingProfileCard: React.FC<FloatingProfileCardProps> = ({ scrollProgress = 1 }) => {
+const FloatingProfileCard: React.FC<FloatingProfileCardProps> = ({ scrollProgress }) => {
   const cardRef = React.useRef<HTMLElement>(null);
   const wrapperRef = React.useRef<HTMLDivElement>(null);
   const rafRef = React.useRef<number | null>(null);
   const [interactive, setInteractive] = React.useState(false);
-  const [isTouchDevice, setIsTouchDevice] = React.useState(false);
 
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress: internalScrollY } = useScroll({
     target: wrapperRef,
     offset: ["start end", "end start"]
   });
 
-  // Use the scroll progress to drive the text reveal opacity and size
-  // This stays outside of React's render loop and is highly optimized.
-  const textOpacity = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 0, 1, 1]);
-  const textHeight = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 0, 80, 80]);
+  // Use a motion value for the active progress to satisfy useTransform
+  const progressToUse = useMotionValue(0);
+  
+  // Sync the progressToUse with either the prop or internal scroll
+  React.useEffect(() => {
+    if (scrollProgress === undefined) {
+      return internalScrollY.on("change", (v) => progressToUse.set(v));
+    } else if (typeof scrollProgress === 'number') {
+      progressToUse.set(scrollProgress);
+    } else {
+      return scrollProgress.on("change", (v) => progressToUse.set(v));
+    }
+  }, [scrollProgress, internalScrollY, progressToUse]);
+
+  // Map the progress to text reveal.
+  const textOpacity = useTransform(
+    progressToUse, 
+    [0, 0.35, 0.6, 1], 
+    [0, 0, 1, 1]
+  );
+  
+  const textHeight = useTransform(
+    progressToUse, 
+    [0, 0.45, 0.65, 1], 
+    [0, 0, 84, 84]
+  );
 
   React.useEffect(() => {
     if (typeof window === 'undefined') return;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setInteractive(finePointer && !reducedMotion);
-    setIsTouchDevice(!finePointer);
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -40,9 +60,9 @@ const FloatingProfileCard: React.FC<FloatingProfileCardProps> = ({ scrollProgres
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const px = x / rect.width - 0.5; // -0.5 to 0.5
+    const px = x / rect.width - 0.5;
     const py = y / rect.height - 0.5;
-    const maxTilt = 22; // degrees
+    const maxTilt = 20;
 
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => {
@@ -92,8 +112,8 @@ const FloatingProfileCard: React.FC<FloatingProfileCardProps> = ({ scrollProgres
            }}
         >
           <div className="py-4 px-5">
-            <h2 className="text-lg font-semibold whitespace-nowrap">Rahul Maheshwari</h2>
-            <p className="text-sm text-muted-foreground whitespace-nowrap">Python • QA • Full Stack</p>
+            <h2 className="text-lg font-semibold leading-tight mb-1">Rahul Maheshwari</h2>
+            <p className="text-sm text-muted-foreground leading-snug">Python • QA • Full Stack</p>
           </div>
         </motion.div>
       </article>
