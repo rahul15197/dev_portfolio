@@ -158,11 +158,11 @@ const DesktopHero = () => {
         <div className="absolute inset-0 pointer-events-none bg-background/80" />
 
         {/* --- SCROLL-JACKED LAYER 1: Initial Massive Names --- */}
-        <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden" style={{ transform: 'translateZ(0)' }}>
           {/* Top Text: Rahul */}
           <div className="absolute top-[20%] xl:top-[22%] w-full flex justify-center">
             <motion.div
-              style={{ x: leftNameX, y: leftNameY, opacity: namesOpacity }}
+              style={{ x: leftNameX, y: leftNameY, opacity: namesOpacity, transform: 'translateZ(0)' }}
               className="flex flex-col items-start whitespace-nowrap"
             >
               <span className="text-sm text-muted-foreground uppercase tracking-widest mb-2 font-medium">Software Engineer</span>
@@ -173,7 +173,7 @@ const DesktopHero = () => {
           {/* Bottom Text: Maheshwari */}
           <div className="absolute top-[65%] xl:top-[68%] w-full flex justify-center">
             <motion.div
-              style={{ x: rightNameX, y: rightNameY, opacity: namesOpacity }}
+              style={{ x: rightNameX, y: rightNameY, opacity: namesOpacity, transform: 'translateZ(0)' }}
               className="flex flex-col items-end whitespace-nowrap"
             >
               <h1 className="text-[8vw] xl:text-[6.5vw] font-black leading-none tracking-tighter text-foreground">MAHESHWARI</h1>
@@ -185,14 +185,14 @@ const DesktopHero = () => {
         {/* --- SCROLL-JACKED LAYER 2: The Morphing Card --- */}
         <motion.div
           className="absolute z-30 pointer-events-auto"
-          style={{ x: cardX, scale: cardScale }}
+          style={{ x: cardX, scale: cardScale, transform: 'translateZ(0)' }}
         >
           <FloatingProfileCard scrollProgress={scrollYProgress} />
         </motion.div>
 
         {/* --- SCROLL-JACKED LAYER 3: Regular Content Fade In --- */}
         <motion.div
-          style={{ opacity: contentOpacity, y: contentY }}
+          style={{ opacity: contentOpacity, y: contentY, transform: 'translateZ(0)' }}
           className="container relative z-40 px-6 w-full flex items-center justify-center h-full pointer-events-none"
         >
           <div className="grid grid-cols-2 items-center gap-12 lg:gap-16 w-full h-full">
