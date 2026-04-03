@@ -98,6 +98,20 @@ Novel ML approach using FastAI neural networks for breast cancer detection with 
 
 ---
 
+
+---
+
+## 📱 Featured Apps
+
+### 1. PaperPilot
+> **AI-powered document analysis**
+
+Analyze research papers and complex documents with AI. Featuring a premium, animated UI and real-time insights.
+
+**Link:** [Visit PaperPilot](https://paper-pilot-1043313298073.us-central1.run.app/)
+
+---
+
 ## 🏗 Portfolio Tech Stack
 
 This portfolio itself is built with a modern, production-quality frontend stack:
@@ -117,30 +131,6 @@ This portfolio itself is built with a modern, production-quality frontend stack:
 | **Deployment** | [Vercel](https://vercel.com) (Hobby tier) |
 
 ---
-
-## 🚀 Running Locally
-
-```bash
-# Clone the repository
-git clone https://github.com/rahul15197/dev_portfolio.git
-cd dev_portfolio
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-The output will be in the `dist/` directory.
 
 ---
 
