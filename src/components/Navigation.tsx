@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Home, User, Briefcase, Mail, Menu, X, Sun, Moon } from 'lucide-react';
+import { Home, User, Briefcase, Mail, Menu, X, Sun, Moon, LayoutGrid, ChevronDown, ExternalLink } from 'lucide-react';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
@@ -37,10 +43,20 @@ const Navigation = () => {
     });
   };
 
+  const apps = [
+    { 
+      title: 'PaperPilot', 
+      description: 'AI-powered document analysis', 
+      href: 'https://paper-pilot-1043313298073.us-central1.run.app/',
+      icon: ExternalLink
+    }
+  ];
+
   const navItems = useMemo(() => [
     { href: '#home', label: 'Home', icon: Home },
     { href: '#about', label: 'About', icon: User },
     { href: '#projects', label: 'Projects', icon: Briefcase },
+    { href: '#apps', label: 'Apps', icon: LayoutGrid, isDropdown: true },
     { href: '#contact', label: 'Contact', icon: Mail }
   ], []);
 
@@ -122,16 +138,54 @@ const Navigation = () => {
                 />
               )}
               <div className="soft-panel flex items-center gap-2 px-3 py-2 rounded-full border border-border/70 bg-card/60 backdrop-blur-xl shadow-[0_10px_30px_hsl(215_24%_18%_/_0.08)]">
-                {navItems.map(item => (
-                  <button
-                    key={item.href}
-                    ref={el => btnRefs.current[item.href] = el}
-                    onClick={() => scrollToSection(item.href)}
-                    className={`relative text-sm px-2 py-1 transition-smooth ${active === item.href ? 'text-primary' : 'text-foreground'}`}
-                  >
-                    <span className="relative z-10 px-2">{item.label}</span>
-                  </button>
-                ))}
+                {navItems.map(item => {
+                  if (item.isDropdown) {
+                    const isActive = active === item.href;
+                    return (
+                      <DropdownMenu key={item.label} modal={false}>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            ref={el => btnRefs.current[item.href!] = el}
+                            className={`relative text-sm px-2 py-1 transition-smooth ${isActive ? 'text-primary' : 'text-foreground hover:text-primary/70'}`}
+                          >
+                            <span className="relative z-10 px-2 flex items-center gap-1.5 font-medium">
+                              {item.label}
+                              <ChevronDown className="w-3.5 h-3.5 opacity-50" />
+                            </span>
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="center" sideOffset={15} className="w-64 p-2 rounded-2xl bg-card/90 backdrop-blur-xl border-border/40 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-300">
+                          <div className="px-2 py-1.5 mb-1.5">
+                            <p className="text-[0.65rem] uppercase tracking-widest text-muted-foreground font-bold">Featured Apps</p>
+                          </div>
+                          {apps.map(app => (
+                            <DropdownMenuItem key={app.title} asChild className="cursor-pointer rounded-xl p-3 focus:bg-primary/10 transition-all group">
+                              <a href={app.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 w-full">
+                                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors text-primary shadow-sm">
+                                  <app.icon className="w-4 h-4" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold">{app.title}</p>
+                                  <p className="text-[0.7rem] text-muted-foreground/80 leading-tight mt-0.5">{app.description}</p>
+                                </div>
+                              </a>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    );
+                  }
+                  return (
+                    <button
+                      key={item.href}
+                      ref={el => btnRefs.current[item.href!] = el}
+                      onClick={() => scrollToSection(item.href!)}
+                      className={`relative text-sm px-2 py-1 transition-smooth ${active === item.href ? 'text-primary' : 'text-foreground'}`}
+                    >
+                      <span className="relative z-10 px-2">{item.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -181,10 +235,39 @@ const Navigation = () => {
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = active === item.href;
+                
+                if (item.isDropdown) {
+                  return (
+                    <div key={item.label} className="mt-2">
+                      <p className="px-4 py-2 text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground font-bold font-mono border-t border-border/30 pt-4">Featured Apps</p>
+                      <div className="grid gap-1 mt-1">
+                        {apps.map(app => (
+                          <a 
+                            key={app.title} 
+                            href={app.href} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-4 px-4 py-4 rounded-xl text-base font-medium text-foreground/80 hover:bg-primary/10 hover:text-primary transition-all active:scale-[0.98]"
+                          >
+                            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-card border border-border/50 shadow-sm text-primary">
+                              <app.icon className="w-5 h-5" />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-semibold">{app.title}</span>
+                              <span className="text-[0.75rem] text-muted-foreground font-normal">{app.description}</span>
+                            </div>
+                            <ChevronDown className="w-4 h-4 ml-auto -rotate-90 opacity-30" />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
                   <button
                     key={item.href}
-                    onClick={() => scrollToSection(item.href)}
+                    onClick={() => scrollToSection(item.href!)}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all ${
                       isActive
                         ? 'bg-primary/15 text-primary'
