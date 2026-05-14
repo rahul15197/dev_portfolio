@@ -47,7 +47,7 @@ const Navigation = () => {
     { 
       title: 'PaperPilot', 
       description: 'AI-powered document analysis', 
-      href: 'https://paper-pilot-1043313298073.us-central1.run.app/',
+      href: 'https://paper-pilot-gamma.vercel.app/',
       icon: ExternalLink
     }
   ];
